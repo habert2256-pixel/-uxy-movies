@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <meta
+    name="description"
+    content="Watch movies on UXY MOVIES."
+  >
+
+  <title>Watch — UXY MOVIES</title>
+
+  <style>
+
+    :root {
+      --bg: #050505;
+      --surface: #111;
+      --text: #fff;
+      --muted: #999;
+      --red: #e50914;
+      --border: rgba(255,255,255,.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .navbar {
+      height: 65px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      padding: 0 5%;
+
+      background: rgba(5,5,5,.95);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 900;
+    }
+
+    .logo span {
+      color: var(--red);
+    }
+
+    .back {
+      color: #bbb;
+    }
+
+    .back:hover {
+      color: white;
+    }
+
+    .watch-page {
+      max-width: 1200px;
+      margin: auto;
+      padding: 30px 5% 70px;
+    }
+
+    .player {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+
+      overflow: hidden;
+
+      background: #000;
+
+      border-radius: 10px;
+      border: 1px solid var(--border);
+
+      box-shadow:
+        0 20px 60px rgba(0,0,0,.45);
+    }
+
+    video {
+      display: block;
+
+      width: 100%;
+      height: 100%;
+
+      background: black;
+    }
+
+    .placeholder {
+      position: absolute;
+      inset: 0;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      padding: 25px;
+
+      text-align: center;
+
+      background:
+        linear-gradient(
+          rgba(0,0,0,.75),
+          rgba(0,0,0,.92)
+        ),
+        url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1400&q=80")
+        center/cover;
+    }
+
+    .play {
+      width: 75px;
+      height: 75px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      margin-bottom: 18px;
+
+      border-radius: 50%;
+
+      background: white;
+      color: black;
+
+      font-size: 1.5rem;
+    }
+
+    .placeholder h1 {
+      margin-bottom: 8px;
+      font-size: 2rem;
+    }
+
+    .placeholder p {
+      max-width: 500px;
+      color: #bbb;
+      font-size: .9rem;
+    }
+
+    .movie-info {
+      padding-top: 25px;
+    }
+
+    .movie-info h2 {
+      margin-bottom: 8px;
+      font-size: 2rem;
+    }
+
+    .meta {
+      display: flex;
+      gap: 10px;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 11px 18px;
+
+      border: 0;
+      border-radius: 6px;
+
+      cursor: pointer;
+
+      font-weight: bold;
+    }
+
+    .download {
+      background: var(--red);
+      color: white;
+    }
+
+    .details {
+      margin-top: 30px;
+      padding: 20px;
+
+      background: var(--surface);
+
+      border: 1px solid var(--border);
+      border-radius: 8px;
+
+      color: #bbb;
+      line-height: 1.7;
+    }
+
+    footer {
+      padding: 30px 5%;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      text-align: center;
+      font-size: .8rem;
+    }
+
+    @media (max-width: 600px) {
+
+      .navbar {
+        padding: 0 4%;
+      }
+
+      .watch-page {
+        padding: 20px 4% 50px;
+      }
+
+      .player {
+        border-radius: 6px;
+      }
+
+      .placeholder h1 {
+        font-size: 1.4rem;
+      }
+
+      .play {
+        width: 55px;
+        height: 55px;
+        font-size: 1.1rem;
+      }
+
+      .actions {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+
+  <header class="navbar">
+
+    <a href="index.html" class="logo">
+      UXY <span>MOVIES</span>
+    </a>
+
+    <a href="movie.html" class="back">
+      ← Movie Details
+    </a>
+
+  </header>
+
+
+  <main class="watch-page">
+
+
+    <div class="player">
+
+      <!--
+        REAL VIDEO FILE GOES HERE LATER.
+
+        Example:
+
+        <video controls poster="poster.jpg">
+          <source src="movies/movie.mp4" type="video/mp4">
+        </video>
+      -->
+
+      <div class="placeholder">
+
+        <div class="play">
+          ▶
+        </div>
+
+        <h1 id="movieTitle">
+          The Last Horizon
+        </h1>
+
+        <p>
+          Your authorized movie video will be connected
+          to this player in the next development phase.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <section class="movie-info">
+
+      <h2>
+        The Last Horizon
+      </h2>
+
+      <div class="meta">
+
+        <span>2026</span>
+
+        <span>•</span>
+
+        <span>Sci-Fi</span>
+
+        <span>•</span>
+
+        <span>HD</span>
+
+        <span>•</span>
+
+        <span>2h 08m</span>
+
+      </div>
+
+
+      <div class="actions">
+
+        <button
+          class="btn download"
+          onclick="downloadMovie()"
+        >
+          ↓ Download Movie
+        </button>
+
+        <a
+          href="movie.html"
+          class="btn"
+        >
+          Movie Details
+        </a>
+
+      </div>
+
+
+      <div class="details">
+
+        <strong>About this movie</strong>
+
+        <p>
+          A cinematic adventure about a group of explorers
+          searching for a new home beyond the edge of known space.
+        </p>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <footer>
+
+    © <span id="year"></span> UXY MOVIES.
+    All rights reserved.
+
+  </footer>
+
+
+  <script>
+
+    document.getElementById("year").textContent =
+      new Date().getFullYear();
+
+
+    function downloadMovie() {
+
+      alert(
+        "The authorized movie download will be connected in Phase 2."
+      );
+
+    }
+
+  </script>
+
+
+</body>
+</html>
