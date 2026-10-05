@@ -287,7 +287,28 @@
 
 
   <script>
+(async function protectAdminPage() {
 
+  try {
+
+    const response =
+      await fetch("/api/auth", {
+        credentials: "include"
+      });
+
+    if (!response.ok) {
+      window.location.href =
+        "/admin-login.html";
+    }
+
+  } catch (error) {
+
+    window.location.href =
+      "/admin-login.html";
+
+  }
+
+})();
     const passwordInput =
       document.getElementById("password");
 
