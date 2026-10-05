@@ -1,438 +1,910 @@
+// ============================================================
 // UXY MOVIES
-// Movie management API
+// MOVIES API
 //
-// GET    /api/movies       -> list movies
-// POST   /api/movies       -> create movie
-// PUT    /api/movies       -> update movie
-// DELETE /api/movies?id=1  -> delete movie
+// GET    /api/movies
+// POST   /api/movies
+// PATCH  /api/movies?id=123
+// DELETE /api/movies?id=123
+//
+// Database: Neon PostgreSQL
+// Environment variable: DATABASE_URL
+// ============================================================
 
-import crypto from "crypto";
 import { neon } from "@neondatabase/serverless";
 
 
-/* =========================================================
-   DATABASE
-========================================================= */
+// ============================================================
+// DATABASE
+// ============================================================
 
-const sql = neon(process.env.DATABASE_URL);
+const databaseUrl =
+  process.env.DATABASE_URL;
 
-
-/* =========================================================
-   COOKIE PARSER
-========================================================= */
-
-function parseCookies(cookieHeader = "") {
-
-  const cookies = {};
-
-  cookieHeader
-    .split(";")
-    .forEach(part => {
-
-      const separator = part.indexOf("=");
-
-      if (separator === -1) {
-        return;
-      }
-
-      const name =
-        part.slice(0, separator).trim();
-
-      const value =
-        part.slice(separator + 1).trim();
-
-      cookies[name] = value;
-
-    });
-
-  return cookies;
+if (!databaseUrl) {
+  console.error(
+    "DATABASE_URL environment variable is missing."
+  );
 }
 
-
-/* =========================================================
-   VERIFY ADMIN SESSION
-========================================================= */
-
-function verifyToken(token) {
-
-  if (!token) {
-    return null;
-  }
-
-  const parts = token.split(".");
-
-  if (parts.length !== 2) {
-    return null;
-  }
-
-  const [
-    encodedPayload,
-    signature
-  ] = parts;
-
-  if (!process.env.SESSION_SECRET) {
-    return null;
-  }
-
-  const expectedSignature =
-    crypto
-      .createHmac(
-        "sha256",
-        process.env.SESSION_SECRET
-      )
-      .update(encodedPayload)
-      .digest("base64url");
-
-  if (
-    signature.length !==
-    expectedSignature.length
-  ) {
-    return null;
-  }
-
-  try {
-
-    const signaturesMatch =
-      crypto.timingSafeEqual(
-        Buffer.from(signature),
-        Buffer.from(expectedSignature)
-      );
-
-    if (!signaturesMatch) {
-      return null;
-    }
-
-    const payload =
-      JSON.parse(
-        Buffer
-          .from(
-            encodedPayload,
-            "base64url"
-          )
-          .toString("utf8")
-      );
-
-    if (!payload.email || !payload.exp) {
-      return null;
-    }
-
-    if (Date.now() >= payload.exp) {
-      return null;
-    }
-
-    return payload;
-
-  } catch {
-
-    return null;
-
-  }
-}
+const sql =
+  databaseUrl
+    ? neon(databaseUrl)
+    : null;
 
 
-/* =========================================================
-   AUTHENTICATION
-========================================================= */
+// ============================================================
+// CORS / RESPONSE HELPERS
+// ============================================================
 
-function authenticate(req) {
+function setHeaders(res) {
 
-  const cookies =
-    parseCookies(
-      req.headers.cookie || ""
-    );
+  res.setHeader(
+    "Content-Type",
+    "application/json"
+  );
 
-  return verifyToken(
-    cookies.uxy_admin_session
+  res.setHeader(
+    "Cache-Control",
+    "no-store"
   );
 
 }
 
 
-/* =========================================================
-   HANDLER
-========================================================= */
+// ============================================================
+// JSON RESPONSE
+// ============================================================
 
-export default async function handler(req, res) {
+function send(
+  res,
+  status,
+  data
+) {
+
+  setHeaders(res);
+
+  res.status(status).json(data);
+
+}
+
+
+// ============================================================
+// DATABASE CHECK
+// ============================================================
+
+function checkDatabase(
+  res
+) {
+
+  if (!sql) {
+
+    send(
+      res,
+      500,
+      {
+        success: false,
+        message:
+          "Database connection is not configured."
+      }
+    );
+
+    return false;
+
+  }
+
+  return true;
+
+}
+
+
+// ============================================================
+// METHOD CHECK
+// ============================================================
+
+function methodNotAllowed(
+  res
+) {
+
+  res.setHeader(
+    "Allow",
+    "GET, POST, PATCH, DELETE"
+  );
+
+  send(
+    res,
+    405,
+    {
+      success: false,
+      message:
+        "Method not allowed."
+    }
+  );
+
+}
+
+
+// ============================================================
+// PARSE REQUEST BODY
+// ============================================================
+
+function getBody(
+  req
+) {
+
+  if (!req.body) {
+    return {};
+  }
+
+
+  if (
+    typeof req.body ===
+    "object"
+  ) {
+
+    return req.body;
+
+  }
+
 
   try {
 
-    /* -----------------------------------------
-       REQUIRE ADMIN LOGIN
-    ----------------------------------------- */
+    return JSON.parse(
+      req.body
+    );
 
-    const session =
-      authenticate(req);
+  } catch {
 
-    if (!session) {
+    return {};
 
-      return res.status(401).json({
-        success: false,
-        message: "Unauthorized."
-      });
+  }
 
-    }
+}
 
 
-    /* =========================================
-       GET — LIST MOVIES
-    ========================================= */
+// ============================================================
+// CLEAN STRING
+// ============================================================
 
-    if (req.method === "GET") {
+function cleanString(
+  value
+) {
 
-      const movies =
-        await sql`
-          SELECT
-            id,
-            title,
-            year,
-            genre,
-            quality,
-            duration,
-            description,
-            poster_url,
-            video_url,
-            download_url,
-            status,
-            created_at,
-            updated_at
-          FROM movies
-          ORDER BY created_at DESC
-        `;
+  if (
+    value === undefined ||
+    value === null
+  ) {
 
-      return res.status(200).json({
+    return null;
+
+  }
+
+
+  const result =
+    String(value).trim();
+
+
+  return result
+    ? result
+    : null;
+
+}
+
+
+// ============================================================
+// YEAR
+// ============================================================
+
+function cleanYear(
+  value
+) {
+
+  if (
+    value === undefined ||
+    value === null ||
+    value === ""
+  ) {
+
+    return null;
+
+  }
+
+
+  const year =
+    Number(value);
+
+
+  if (
+    !Number.isInteger(year)
+  ) {
+
+    return null;
+
+  }
+
+
+  if (
+    year < 1800 ||
+    year > 2100
+  ) {
+
+    return null;
+
+  }
+
+
+  return year;
+
+}
+
+
+// ============================================================
+// ID
+// ============================================================
+
+function getMovieId(
+  req
+) {
+
+  const rawId =
+    req.query?.id;
+
+
+  if (
+    rawId === undefined ||
+    rawId === null ||
+    rawId === ""
+  ) {
+
+    return null;
+
+  }
+
+
+  const id =
+    Number(rawId);
+
+
+  if (
+    !Number.isInteger(id) ||
+    id <= 0
+  ) {
+
+    return null;
+
+  }
+
+
+  return id;
+
+}
+
+
+// ============================================================
+// GET MOVIES
+// ============================================================
+
+async function getMovies(
+  req,
+  res
+) {
+
+  try {
+
+    const movies =
+      await sql`
+        SELECT
+          id,
+          title,
+          year,
+          genre,
+          quality,
+          duration,
+          description,
+          poster_url,
+          video_url,
+          download_url,
+          status,
+          created_at,
+          updated_at
+        FROM movies
+        ORDER BY created_at DESC
+      `;
+
+
+    send(
+      res,
+      200,
+      {
         success: true,
         movies
-      });
-
-    }
-
-
-    /* =========================================
-       POST — CREATE MOVIE
-    ========================================= */
-
-    if (req.method === "POST") {
-
-      const {
-        title,
-        year,
-        genre,
-        quality,
-        duration,
-        description,
-        poster_url,
-        video_url,
-        download_url,
-        status
-      } = req.body || {};
-
-
-      if (!title || !title.trim()) {
-
-        return res.status(400).json({
-          success: false,
-          message: "Movie title is required."
-        });
-
       }
-
-
-      const movieStatus =
-        status === "draft"
-          ? "draft"
-          : "published";
-
-
-      const result =
-        await sql`
-          INSERT INTO movies (
-            title,
-            year,
-            genre,
-            quality,
-            duration,
-            description,
-            poster_url,
-            video_url,
-            download_url,
-            status
-          )
-          VALUES (
-            ${title.trim()},
-            ${year || null},
-            ${genre || null},
-            ${quality || null},
-            ${duration || null},
-            ${description || null},
-            ${poster_url || null},
-            ${video_url || null},
-            ${download_url || null},
-            ${movieStatus}
-          )
-          RETURNING *
-        `;
-
-
-      return res.status(201).json({
-        success: true,
-        movie: result[0]
-      });
-
-    }
-
-
-    /* =========================================
-       PUT — UPDATE MOVIE
-    ========================================= */
-
-    if (req.method === "PUT") {
-
-      const {
-        id,
-        title,
-        year,
-        genre,
-        quality,
-        duration,
-        description,
-        poster_url,
-        video_url,
-        download_url,
-        status
-      } = req.body || {};
-
-
-      if (!id) {
-
-        return res.status(400).json({
-          success: false,
-          message: "Movie ID is required."
-        });
-
-      }
-
-
-      if (!title || !title.trim()) {
-
-        return res.status(400).json({
-          success: false,
-          message: "Movie title is required."
-        });
-
-      }
-
-
-      const movieStatus =
-        status === "draft"
-          ? "draft"
-          : "published";
-
-
-      const result =
-        await sql`
-          UPDATE movies
-          SET
-            title = ${title.trim()},
-            year = ${year || null},
-            genre = ${genre || null},
-            quality = ${quality || null},
-            duration = ${duration || null},
-            description = ${description || null},
-            poster_url = ${poster_url || null},
-            video_url = ${video_url || null},
-            download_url = ${download_url || null},
-            status = ${movieStatus},
-            updated_at = NOW()
-          WHERE id = ${id}
-          RETURNING *
-        `;
-
-
-      if (!result.length) {
-
-        return res.status(404).json({
-          success: false,
-          message: "Movie not found."
-        });
-
-      }
-
-
-      return res.status(200).json({
-        success: true,
-        movie: result[0]
-      });
-
-    }
-
-
-    /* =========================================
-       DELETE — DELETE MOVIE
-    ========================================= */
-
-    if (req.method === "DELETE") {
-
-      const id =
-        req.query?.id;
-
-
-      if (!id) {
-
-        return res.status(400).json({
-          success: false,
-          message: "Movie ID is required."
-        });
-
-      }
-
-
-      const result =
-        await sql`
-          DELETE FROM movies
-          WHERE id = ${id}
-          RETURNING id
-        `;
-
-
-      if (!result.length) {
-
-        return res.status(404).json({
-          success: false,
-          message: "Movie not found."
-        });
-
-      }
-
-
-      return res.status(200).json({
-        success: true,
-        message: "Movie deleted."
-      });
-
-    }
-
-
-    /* =========================================
-       METHOD NOT ALLOWED
-    ========================================= */
-
-    return res.status(405).json({
-      success: false,
-      message: "Method not allowed."
-    });
+    );
 
 
   } catch (error) {
 
     console.error(
-      "Movies API error:",
+      "GET /api/movies error:",
       error
     );
 
-    return res.status(500).json({
-      success: false,
-      message: "Database error."
-    });
+
+    send(
+      res,
+      500,
+      {
+        success: false,
+        message:
+          "Unable to load movies."
+      }
+    );
+
+  }
+
+}
+
+
+// ============================================================
+// ADD MOVIE
+// ============================================================
+
+async function createMovie(
+  req,
+  res
+) {
+
+  const body =
+    getBody(req);
+
+
+  const title =
+    cleanString(
+      body.title
+    );
+
+
+  if (!title) {
+
+    send(
+      res,
+      400,
+      {
+        success: false,
+        message:
+          "Movie title is required."
+      }
+    );
+
+    return;
+
+  }
+
+
+  const year =
+    cleanYear(
+      body.year
+    );
+
+
+  const genre =
+    cleanString(
+      body.genre
+    );
+
+
+  const quality =
+    cleanString(
+      body.quality
+    );
+
+
+  const duration =
+    cleanString(
+      body.duration
+    );
+
+
+  const description =
+    cleanString(
+      body.description
+    );
+
+
+  const posterUrl =
+    cleanString(
+      body.poster_url
+    );
+
+
+  const videoUrl =
+    cleanString(
+      body.video_url
+    );
+
+
+  const downloadUrl =
+    cleanString(
+      body.download_url
+    );
+
+
+  const status =
+    body.status === "draft"
+      ? "draft"
+      : "published";
+
+
+  try {
+
+    const result =
+      await sql`
+        INSERT INTO movies (
+          title,
+          year,
+          genre,
+          quality,
+          duration,
+          description,
+          poster_url,
+          video_url,
+          download_url,
+          status
+        )
+        VALUES (
+          ${title},
+          ${year},
+          ${genre},
+          ${quality},
+          ${duration},
+          ${description},
+          ${posterUrl},
+          ${videoUrl},
+          ${downloadUrl},
+          ${status}
+        )
+        RETURNING
+          id,
+          title,
+          year,
+          genre,
+          quality,
+          duration,
+          description,
+          poster_url,
+          video_url,
+          download_url,
+          status,
+          created_at,
+          updated_at
+      `;
+
+
+    send(
+      res,
+      201,
+      {
+        success: true,
+        message:
+          "Movie added successfully.",
+        movie:
+          result[0]
+      }
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "POST /api/movies error:",
+      error
+    );
+
+
+    send(
+      res,
+      500,
+      {
+        success: false,
+        message:
+          "Unable to add movie."
+      }
+    );
+
+  }
+
+}
+
+
+// ============================================================
+// UPDATE MOVIE
+// ============================================================
+
+async function updateMovie(
+  req,
+  res
+) {
+
+  const id =
+    getMovieId(req);
+
+
+  if (!id) {
+
+    send(
+      res,
+      400,
+      {
+        success: false,
+        message:
+          "A valid movie ID is required."
+      }
+    );
+
+    return;
+
+  }
+
+
+  const body =
+    getBody(req);
+
+
+  const title =
+    cleanString(
+      body.title
+    );
+
+
+  if (!title) {
+
+    send(
+      res,
+      400,
+      {
+        success: false,
+        message:
+          "Movie title is required."
+      }
+    );
+
+    return;
+
+  }
+
+
+  const year =
+    cleanYear(
+      body.year
+    );
+
+
+  const genre =
+    cleanString(
+      body.genre
+    );
+
+
+  const quality =
+    cleanString(
+      body.quality
+    );
+
+
+  const duration =
+    cleanString(
+      body.duration
+    );
+
+
+  const description =
+    cleanString(
+      body.description
+    );
+
+
+  const posterUrl =
+    cleanString(
+      body.poster_url
+    );
+
+
+  const videoUrl =
+    cleanString(
+      body.video_url
+    );
+
+
+  const downloadUrl =
+    cleanString(
+      body.download_url
+    );
+
+
+  const status =
+    body.status === "draft"
+      ? "draft"
+      : "published";
+
+
+  try {
+
+    const result =
+      await sql`
+        UPDATE movies
+        SET
+          title = ${title},
+          year = ${year},
+          genre = ${genre},
+          quality = ${quality},
+          duration = ${duration},
+          description = ${description},
+          poster_url = ${posterUrl},
+          video_url = ${videoUrl},
+          download_url = ${downloadUrl},
+          status = ${status},
+          updated_at = NOW()
+        WHERE id = ${id}
+        RETURNING
+          id,
+          title,
+          year,
+          genre,
+          quality,
+          duration,
+          description,
+          poster_url,
+          video_url,
+          download_url,
+          status,
+          created_at,
+          updated_at
+      `;
+
+
+    if (
+      result.length === 0
+    ) {
+
+      send(
+        res,
+        404,
+        {
+          success: false,
+          message:
+            "Movie not found."
+        }
+      );
+
+      return;
+
+    }
+
+
+    send(
+      res,
+      200,
+      {
+        success: true,
+        message:
+          "Movie updated successfully.",
+        movie:
+          result[0]
+      }
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "PATCH /api/movies error:",
+      error
+    );
+
+
+    send(
+      res,
+      500,
+      {
+        success: false,
+        message:
+          "Unable to update movie."
+      }
+    );
+
+  }
+
+}
+
+
+// ============================================================
+// DELETE MOVIE
+// ============================================================
+
+async function deleteMovie(
+  req,
+  res
+) {
+
+  const id =
+    getMovieId(req);
+
+
+  if (!id) {
+
+    send(
+      res,
+      400,
+      {
+        success: false,
+        message:
+          "A valid movie ID is required."
+      }
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    const result =
+      await sql`
+        DELETE FROM movies
+        WHERE id = ${id}
+        RETURNING id, title
+      `;
+
+
+    if (
+      result.length === 0
+    ) {
+
+      send(
+        res,
+        404,
+        {
+          success: false,
+          message:
+            "Movie not found."
+        }
+      );
+
+      return;
+
+    }
+
+
+    send(
+      res,
+      200,
+      {
+        success: true,
+        message:
+          "Movie deleted successfully.",
+        movie:
+          result[0]
+      }
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "DELETE /api/movies error:",
+      error
+    );
+
+
+    send(
+      res,
+      500,
+      {
+        success: false,
+        message:
+          "Unable to delete movie."
+      }
+    );
+
+  }
+
+}
+
+
+// ============================================================
+// MAIN HANDLER
+// ============================================================
+
+export default async function handler(
+  req,
+  res
+) {
+
+  if (
+    !checkDatabase(res)
+  ) {
+
+    return;
+
+  }
+
+
+  try {
+
+    switch (
+      req.method
+    ) {
+
+      case "GET":
+
+        await getMovies(
+          req,
+          res
+        );
+
+        break;
+
+
+      case "POST":
+
+        await createMovie(
+          req,
+          res
+        );
+
+        break;
+
+
+      case "PATCH":
+
+        await updateMovie(
+          req,
+          res
+        );
+
+        break;
+
+
+      case "DELETE":
+
+        await deleteMovie(
+          req,
+          res
+        );
+
+        break;
+
+
+      default:
+
+        methodNotAllowed(
+          res
+        );
+
+    }
+
+  } catch (error) {
+
+    console.error(
+      "Movies API fatal error:",
+      error
+    );
+
+
+    if (!res.headersSent) {
+
+      send(
+        res,
+        500,
+        {
+          success: false,
+          message:
+            "Internal server error."
+        }
+      );
+
+    }
 
   }
 
