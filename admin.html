@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <meta name="theme-color" content="#090909">
+
+  <title>UXY MOVIES — Admin Dashboard</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #080808;
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    header {
+      height: 72px;
+      border-bottom: 1px solid #242424;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(8, 8, 8, 0.96);
+      backdrop-filter: blur(12px);
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .logo span {
+      color: #ed0b16;
+    }
+
+    .admin-label {
+      color: #aaa;
+      font-size: 14px;
+    }
+
+    /* =========================
+       LAYOUT
+    ========================= */
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 32px 24px 60px;
+    }
+
+    .top-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .top-section h1 {
+      font-size: 32px;
+      margin-bottom: 7px;
+    }
+
+    .top-section p {
+      color: #999;
+      font-size: 15px;
+    }
+
+    .add-button {
+      border: none;
+      background: #ed0b16;
+      color: white;
+      padding: 14px 20px;
+      border-radius: 9px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .add-button:hover {
+      background: #ff1823;
+    }
+
+    /* =========================
+       STATS
+    ========================= */
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: #111;
+      border: 1px solid #242424;
+      border-radius: 12px;
+      padding: 22px;
+    }
+
+    .stat-card p {
+      color: #888;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .stat-card h2 {
+      font-size: 30px;
+    }
+
+    /* =========================
+       MOVIE MANAGEMENT
+    ========================= */
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .section-title h2 {
+      font-size: 21px;
+    }
+
+    .movie-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .movie-row {
+      background: #111;
+      border: 1px solid #242424;
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .poster {
+      width: 62px;
+      height: 82px;
+      border-radius: 7px;
+      object-fit: cover;
+      background: #222;
+      flex-shrink: 0;
+    }
+
+    .movie-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .movie-info h3 {
+      font-size: 17px;
+      margin-bottom: 7px;
+    }
+
+    .movie-info p {
+      color: #888;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .status {
+      display: inline-block;
+      margin-top: 7px;
+      padding: 4px 8px;
+      border-radius: 5px;
+      background: #123b20;
+      color: #63df82;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .action-button {
+      border: 1px solid #333;
+      background: #181818;
+      color: #fff;
+      padding: 9px 12px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .action-button.delete {
+      color: #ff5a61;
+    }
+
+    .action-button:hover {
+      background: #222;
+    }
+
+    /* =========================
+       ADD MOVIE PANEL
+    ========================= */
+
+    .panel {
+      display: none;
+      margin-top: 30px;
+      background: #111;
+      border: 1px solid #292929;
+      border-radius: 14px;
+      padding: 24px;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    .panel h2 {
+      margin-bottom: 20px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      color: #bbb;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid #333;
+      background: #080808;
+      color: #fff;
+      border-radius: 8px;
+      padding: 13px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #ed0b16;
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .form-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .save-button {
+      background: #ed0b16;
+      color: #fff;
+      border: none;
+      padding: 13px 20px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .cancel-button {
+      background: #222;
+      color: #fff;
+      border: 1px solid #333;
+      padding: 13px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    /* =========================
+       NOTICE
+    ========================= */
+
+    .notice {
+      margin-top: 28px;
+      padding: 16px;
+      background: #171208;
+      border: 1px solid #473713;
+      color: #d7c38b;
+      border-radius: 9px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 700px) {
+
+      header {
+        padding: 0 16px;
+      }
+
+      .logo {
+        font-size: 21px;
+      }
+
+      .admin-label {
+        font-size: 12px;
+      }
+
+      .container {
+        padding: 24px 16px 50px;
+      }
+
+      .top-section {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .top-section h1 {
+        font-size: 27px;
+      }
+
+      .add-button {
+        width: 100%;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .movie-row {
+        align-items: flex-start;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .action-button {
+        white-space: nowrap;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .field.full {
+        grid-column: auto;
+      }
+
+      .form-buttons {
+        flex-direction: column;
+      }
+
+      .save-button,
+      .cancel-button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =========================
+       HEADER
+  ========================= -->
+
+  <header>
+
+    <div class="logo">
+      UXY <span>MOVIES</span>
+    </div>
+
+    <div class="admin-label">
+      Admin Dashboard
+    </div>
+
+  </header>
+
+
+  <!-- =========================
+       MAIN
+  ========================= -->
+
+  <main class="container">
+
+    <div class="top-section">
+
+      <div>
+        <h1>Dashboard</h1>
+        <p>Manage your UXY MOVIES library.</p>
+      </div>
+
+      <button
+        class="add-button"
+        onclick="showAddMovie()"
+      >
+        + Add Movie
+      </button>
+
+    </div>
+
+
+    <!-- =========================
+         STATISTICS
+    ========================= -->
+
+    <section class="stats">
+
+      <div class="stat-card">
+        <p>Total Movies</p>
+        <h2 id="totalMovies">1</h2>
+      </div>
+
+      <div class="stat-card">
+        <p>Published</p>
+        <h2 id="publishedMovies">1</h2>
+      </div>
+
+      <div class="stat-card">
+        <p>Drafts</p>
+        <h2 id="draftMovies">0</h2>
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         MOVIE LIST
+    ========================= -->
+
+    <section>
+
+      <div class="section-title">
+        <h2>Movies</h2>
+      </div>
+
+      <div class="movie-list" id="movieList">
+
+        <div class="movie-row">
+
+          <img
+            class="poster"
+            src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=300&q=80"
+            alt="The Last Horizon"
+          >
+
+          <div class="movie-info">
+
+            <h3>The Last Horizon</h3>
+
+            <p>
+              2026 • Sci-Fi • HD • 2h 08m
+            </p>
+
+            <span class="status">
+              PUBLISHED
+            </span>
+
+          </div>
+
+          <div class="actions">
+
+            <button
+              class="action-button"
+              onclick="editMovie()"
+            >
+              Edit
+            </button>
+
+            <button
+              class="action-button delete"
+              onclick="deleteMovie()"
+            >
+              Delete
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         ADD MOVIE FORM
+    ========================= -->
+
+    <section
+      class="panel"
+      id="moviePanel"
+    >
+
+      <h2>Add New Movie</h2>
+
+      <div class="form-grid">
+
+        <div class="field">
+
+          <label for="title">
+            Movie Title
+          </label>
+
+          <input
+            id="title"
+            type="text"
+            placeholder="Enter movie title"
+          >
+
+        </div>
+
+
+        <div class="field">
+
+          <label for="year">
+            Release Year
+          </label>
+
+          <input
+            id="year"
+            type="number"
+            placeholder="2026"
+          >
+
+        </div>
+
+
+        <div class="field">
+
+          <label for="genre">
+            Genre
+          </label>
+
+          <select id="genre">
+
+            <option value="">
+              Select genre
+            </option>
+
+            <option>Action</option>
+            <option>Adventure</option>
+            <option>Comedy</option>
+            <option>Drama</option>
+            <option>Horror</option>
+            <option>Sci-Fi</option>
+            <option>Thriller</option>
+            <option>Animation</option>
+
+          </select>
+
+        </div>
+
+
+        <div class="field">
+
+          <label for="quality">
+            Quality
+          </label>
+
+          <select id="quality">
+
+            <option>HD</option>
+            <option>Full HD</option>
+            <option>4K</option>
+
+          </select>
+
+        </div>
+
+
+        <div class="field">
+
+          <label for="duration">
+            Duration
+          </label>
+
+          <input
+            id="duration"
+            type="text"
+            placeholder="2h 08m"
+          >
+
+        </div>
+
+
+        <div class="field">
+
+          <label for="poster">
+            Poster URL
+          </label>
+
+          <input
+            id="poster"
+            type="url"
+            placeholder="https://..."
+          >
+
+        </div>
+
+
+        <div class="field full">
+
+          <label for="description">
+            Description
+          </label>
+
+          <textarea
+            id="description"
+            placeholder="Write the movie description..."
+          ></textarea>
+
+        </div>
+
+
+        <div class="field full">
+
+          <label for="videoUrl">
+            Authorized Video URL
+          </label>
+
+          <input
+            id="videoUrl"
+            type="url"
+            placeholder="https://your-authorized-video-host.com/movie.mp4"
+          >
+
+        </div>
+
+
+        <div class="field full">
+
+          <label for="downloadUrl">
+            Authorized Download URL
+          </label>
+
+          <input
+            id="downloadUrl"
+            type="url"
+            placeholder="https://your-authorized-storage.com/movie.mp4"
+          >
+
+        </div>
+
+      </div>
+
+
+      <div class="form-buttons">
+
+        <button
+          class="save-button"
+          onclick="saveMovie()"
+        >
+          Save Movie
+        </button>
+
+        <button
+          class="cancel-button"
+          onclick="hideAddMovie()"
+        >
+          Cancel
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         NOTICE
+    ========================= -->
+
+    <div class="notice">
+
+      <strong>Important:</strong>
+      Only add movies, video files, posters, and download links
+      that you own, have permission to distribute, or are legally
+      authorized to use. Large video files should be hosted on
+      dedicated authorized storage rather than directly inside
+      GitHub or Vercel.
+
+    </div>
+
+  </main>
+
+
+  <!-- =========================
+       JAVASCRIPT
+  ========================= -->
+
+  <script>
+
+    function showAddMovie() {
+
+      document
+        .getElementById("moviePanel")
+        .classList
+        .add("active");
+
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth"
+      });
+
+    }
+
+
+    function hideAddMovie() {
+
+      document
+        .getElementById("moviePanel")
+        .classList
+        .remove("active");
+
+    }
+
+
+    function saveMovie() {
+
+      const title =
+        document.getElementById("title").value.trim();
+
+      if (!title) {
+
+        alert("Please enter a movie title.");
+
+        return;
+
+      }
+
+      alert(
+        "Movie form received.\n\n" +
+        "The database system will be connected in the next step."
+      );
+
+    }
+
+
+    function editMovie() {
+
+      alert(
+        "Movie editing will be connected when the database is added."
+      );
+
+    }
+
+
+    function deleteMovie() {
+
+      const confirmed =
+        confirm(
+          "Are you sure you want to delete this movie?"
+        );
+
+      if (confirmed) {
+
+        alert(
+          "Delete functionality will be connected to the database next."
+        );
+
+      }
+
+    }
+
+  </script>
+
+</body>
+</html>
