@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="UXY MOVIES - Watch and discover movies.">
+  <title>UXY MOVIES</title>
+
+  <style>
+    :root {
+      --bg: #080808;
+      --surface: #121212;
+      --surface-2: #1b1b1b;
+      --text: #ffffff;
+      --muted: #a7a7a7;
+      --accent: #e50914;
+      --border: rgba(255,255,255,.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.5;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    /* NAVBAR */
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 18px 5%;
+      background: rgba(8, 8, 8, .94);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+    }
+
+    .logo {
+      font-size: 1.6rem;
+      font-weight: 900;
+      letter-spacing: -1px;
+      white-space: nowrap;
+    }
+
+    .logo span {
+      color: var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 25px;
+      color: #ddd;
+    }
+
+    .nav-links a:hover {
+      color: white;
+    }
+
+    .search {
+      display: flex;
+      align-items: center;
+      width: min(300px, 30vw);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .search input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: white;
+    }
+
+    .search button {
+      padding: 10px 13px;
+      border: 0;
+      background: transparent;
+      color: white;
+      cursor: pointer;
+    }
+
+    /* HERO */
+
+    .hero {
+      min-height: 540px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      padding: 70px 5%;
+      background:
+        linear-gradient(90deg, #080808 0%, rgba(8,8,8,.92) 32%, rgba(8,8,8,.25) 75%, #080808 100%),
+        linear-gradient(0deg, #080808 0%, transparent 25%),
+        url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1800&q=85")
+        center/cover no-repeat;
+    }
+
+    .hero-content {
+      max-width: 650px;
+    }
+
+    .hero-label {
+      display: inline-block;
+      margin-bottom: 15px;
+      padding: 6px 11px;
+      border-radius: 5px;
+      background: var(--accent);
+      font-size: .78rem;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      margin-bottom: 15px;
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      line-height: .95;
+      letter-spacing: -3px;
+    }
+
+    .hero p {
+      max-width: 560px;
+      margin-bottom: 25px;
+      color: #d0d0d0;
+      font-size: 1.05rem;
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 25px;
+      color: #ccc;
+      font-size: .9rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border: 0;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: .2s ease;
+    }
+
+    .btn-primary {
+      background: white;
+      color: black;
+    }
+
+    .btn-primary:hover {
+      background: #ddd;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,.15);
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,.25);
+    }
+
+    /* CONTENT */
+
+    main {
+      padding: 40px 5% 80px;
+    }
+
+    .section {
+      margin-bottom: 45px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .section-heading h2 {
+      font-size: 1.45rem;
+    }
+
+    .section-heading a {
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .section-heading a:hover {
+      color: white;
+    }
+
+    /* CATEGORIES */
+
+    .categories {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      scrollbar-width: none;
+    }
+
+    .categories::-webkit-scrollbar {
+      display: none;
+    }
+
+    .category {
+      flex: 0 0 auto;
+      padding: 10px 17px;
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      background: var(--surface);
+      color: #ddd;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .category:hover,
+    .category.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    /* MOVIE GRID */
+
+    .movie-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .movie-card {
+      min-width: 0;
+      background: var(--surface);
+      border-radius: 9px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      transition: transform .25s ease, border-color .25s ease;
+    }
+
+    .movie-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255,255,255,.2);
+    }
+
+    .poster {
+      position: relative;
+      aspect-ratio: 2 / 3;
+      overflow: hidden;
+      background: #222;
+    }
+
+    .poster img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .3s ease;
+    }
+
+    .movie-card:hover .poster img {
+      transform: scale(1.04);
+    }
+
+    .quality {
+      position: absolute;
+      top: 9px;
+      left: 9px;
+      padding: 4px 7px;
+      border-radius: 4px;
+      background: rgba(0,0,0,.8);
+      font-size: .7rem;
+      font-weight: bold;
+    }
+
+    .movie-info {
+      padding: 12px;
+    }
+
+    .movie-title {
+      margin-bottom: 5px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: bold;
+    }
+
+    .movie-meta {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: .78rem;
+    }
+
+    .movie-actions {
+      display: flex;
+      gap: 7px;
+      margin-top: 12px;
+    }
+
+    .small-btn {
+      flex: 1;
+      padding: 8px 5px;
+      border: 0;
+      border-radius: 5px;
+      background: var(--surface-2);
+      color: white;
+      cursor: pointer;
+      font-size: .78rem;
+    }
+
+    .small-btn:hover {
+      background: var(--accent);
+    }
+
+    /* EMPTY SEARCH */
+
+    .no-results {
+      display: none;
+      padding: 50px 20px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    /* FOOTER */
+
+    footer {
+      padding: 45px 5%;
+      border-top: 1px solid var(--border);
+      background: #050505;
+      color: var(--muted);
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 30px;
+      margin-bottom: 35px;
+    }
+
+    .footer-brand {
+      max-width: 400px;
+    }
+
+    .footer-brand h2 {
+      margin-bottom: 10px;
+      color: white;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 50px;
+    }
+
+    .footer-column h3 {
+      margin-bottom: 12px;
+      color: white;
+      font-size: .95rem;
+    }
+
+    .footer-column a {
+      display: block;
+      margin-bottom: 8px;
+      font-size: .85rem;
+    }
+
+    .footer-column a:hover {
+      color: white;
+    }
+
+    .copyright {
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: .8rem;
+    }
+
+    /* MOBILE NAV */
+
+    .mobile-nav {
+      display: none;
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 1100px) {
+      .movie-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 800px) {
+      .navbar {
+        padding: 15px 4%;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .search {
+        width: 45vw;
+      }
+
+      .hero {
+        min-height: 500px;
+        padding: 50px 5%;
+        background:
+          linear-gradient(90deg, #080808 0%, rgba(8,8,8,.85) 100%),
+          url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=80")
+          center/cover;
+      }
+
+      .movie-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .footer-top {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 550px) {
+      body {
+        padding-bottom: 65px;
+      }
+
+      .navbar {
+        gap: 10px;
+      }
+
+      .logo {
+        font-size: 1.3rem;
+      }
+
+      .search {
+        width: auto;
+        flex: 1;
+      }
+
+      .hero {
+        min-height: 470px;
+        padding: 40px 5%;
+      }
+
+      .hero h1 {
+        font-size: 3rem;
+      }
+
+      .hero p {
+        font-size: .9rem;
+      }
+
+      main {
+        padding: 30px 4% 60px;
+      }
+
+      .movie-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .movie-info {
+        padding: 9px;
+      }
+
+      .movie-actions {
+        flex-direction: column;
+      }
+
+      .footer-links {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+      }
+
+      .mobile-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        display: flex;
+        justify-content: space-around;
+        padding: 11px 5px;
+        background: rgba(10,10,10,.97);
+        border-top: 1px solid var(--border);
+      }
+
+      .mobile-nav a {
+        color: #aaa;
+        text-align: center;
+        font-size: .7rem;
+      }
+
+      .mobile-nav a:hover {
+        color: white;
+      }
+
+      .mobile-nav span {
+        display: block;
+        margin-bottom: 2px;
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVIGATION -->
+  <header class="navbar">
+    <a href="#" class="logo">UXY <span>MOVIES</span></a>
+
+    <nav class="nav-links">
+      <a href="#home">Home</a>
+      <a href="#movies">Movies</a>
+      <a href="#categories">Categories</a>
+    </nav>
+
+    <form class="search" id="searchForm">
+      <input
+        type="search"
+        id="searchInput"
+        placeholder="Search movies..."
+        aria-label="Search movies"
+      >
+      <button type="submit" aria-label="Search">⌕</button>
+    </form>
+  </header>
+
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+
+      <span class="hero-label">Featured Movie</span>
+
+      <h1>THE LAST<br>HORIZON</h1>
+
+      <div class="hero-meta">
+        <span>2026</span>
+        <span>•</span>
+        <span>Action</span>
+        <span>•</span>
+        <span>2h 08m</span>
+      </div>
+
+      <p>
+        A cinematic adventure about a group of explorers searching for
+        a new home beyond the edge of known space.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#movies" class="btn btn-primary">
+          ▶ Browse Movies
+        </a>
+
+        <a href="#categories" class="btn btn-secondary">
+          Explore
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <main>
+
+    <!-- CATEGORIES -->
+    <section class="section" id="categories">
+
+      <div class="section-heading">
+        <h2>Browse Categories</h2>
+      </div>
+
+      <div class="categories">
+        <button class="category active" data-category="all">All</button>
+        <button class="category" data-category="action">Action</button>
+        <button class="category" data-category="comedy">Comedy</button>
+        <button class="category" data-category="drama">Drama</button>
+        <button class="category" data-category="horror">Horror</button>
+        <button class="category" data-category="sci-fi">Sci-Fi</button>
+        <button class="category" data-category="thriller">Thriller</button>
+        <button class="category" data-category="animation">Animation</button>
+      </div>
+
+    </section>
+
+
+    <!-- MOVIES -->
+    <section class="section" id="movies">
+
+      <div class="section-heading">
+        <h2>Latest Movies</h2>
+        <a href="#movies">View all →</a>
+      </div>
+
+      <div class="movie-grid" id="movieGrid">
+
+        <!-- MOVIE 1 -->
+        <article class="movie-card" data-title="The Last Horizon" data-category="sci-fi">
+          <div class="poster">
+            <img
+              src="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&w=600&q=80"
+              alt="The Last Horizon poster"
+              loading="lazy"
+            >
+            <span class="quality">HD</span>
+          </div>
+
+          <div class="movie-info">
+            <div class="movie-title">The Last Horizon</div>
+
+            <div class="movie-meta">
+              <span>2026</span>
+              <span>Sci-Fi</span>
+            </div>
+
+            <div class="movie-actions">
+              <button class="small-btn" onclick="watchMovie('The Last Horizon')">
+                ▶ Watch
+              </button>
+              <button class="small-btn" onclick="downloadMovie('The Last Horizon')">
+                ↓ Download
+              </button>
+            </div>
+          </div>
+        </article>
+
+
+        <!-- MOVIE 2 -->
+        <article class="movie-card" data-title="Midnight Run" data-category="action">
+          <div class="poster">
+            <img
+              src="https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=600&q=80"
+              alt="Midnight Run poster"
+              loading="lazy"
+            >
+            <span class="quality">4K</span>
+          </div>
+
+          <div class="movie-info">
+            <div class="movie-title">Midnight Run</div>
+
+            <div class="movie-meta">
+              <span>2025</span>
+              <span>Action</span>
+            </div>
+
+            <div class="movie-actions">
+              <button class="small-btn" onclick="watchMovie('Midnight Run')">
+                ▶ Watch
+              </button>
+              <button class="small-btn" onclick="downloadMovie('Midnight Run')">
+                ↓ Download
+              </button>
+            </div>
+          </div>
+        </article>
+
+
+        <!-- MOVIE 3 -->
+        <article class="movie-card" data-title="Hidden Truth" data-category="thriller">
+          <div class="poster">
+            <img
+              src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=600&q=80"
+              alt="Hidden Truth poster"
+              loading="lazy"
+            >
+            <span class="quality">HD</span>
+          </div>
+
+          <div class="movie-info">
+            <div class="movie-title">Hidden Truth</div>
+
+            <div class="movie-meta">
+              <span>2025</span>
+              <span>Thriller</span>
+            </div>
+
+            <div class="movie-actions">
+              <button class="small-btn" onclick="watchMovie('Hidden Truth')">
+                ▶ Watch
+              </button>
+              <button class="small-btn" onclick="downloadMovie('Hidden Truth')">
+                ↓ Download
+              </button>
+            </div>
+          </div>
+        </article>
+
+
+        <!-- MOVIE 4 -->
+        <article class="movie-card" data-title="After The Storm" data-category="drama">
+          <div class="poster">
+            <img
+              src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=600&q=80"
+              alt="After The Storm poster"
+              loading="lazy"
+            >
+            <span class="quality">HD</span>
+          </div>
+
+          <div class="movie-info">
+            <div class="movie-title">After The Storm</div>
+
+            <div class="movie-meta">
+              <span>2025</span>
+              <span>Drama</span>
+            </div>
+
+            <div class="movie-actions">
+              <button class="small-btn" onclick="watchMovie('After The Storm')">
+                ▶ Watch
+              </button>
+              <button class="small-btn" onclick="downloadMovie('After The Storm')">
+                ↓ Download
+              </button>
+            </div>
+          </div>
+        </article>
+
+
+        <!-- MOVIE 5 -->
+        <article class="movie-card" data-title="Laugh Out Loud" data-category="comedy">
+          <div class="poster">
+            <img
+              src="https://images.unsplash.com/photo-1503095396549-807759245b35?auto=format&fit=crop&w=600&q=80"
+              alt="Laugh Out Loud poster"
+              loading="lazy"
+            >
+            <span class="quality">HD</span>
+          </div>
+
+          <div class="movie-info">
+            <div class="movie-title">Laugh Out Loud</div>
+
+            <div class="movie-meta">
+              <span>2026</span>
+              <span>Comedy</span>
+            </div>
+
+            <div class="movie-actions">
+              <button class="small-btn" onclick="watchMovie('Laugh Out Loud')">
+                ▶ Watch
+              </button>
+              <button class="small-btn" onclick="downloadMovie('Laugh Out Loud')">
+                ↓ Download
+              </button>
+            </div>
+          </div>
+        </article>
+
+
+        <!-- MOVIE 6 -->
+        <article class="movie-card" data-title="Dark Forest" data-category="horror">
+          <div class="poster">
+            <img
+              src="https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=600&q=80"
+              alt="Dark Forest poster"
+              loading="lazy"
+            >
+            <span class="quality">HD</span>
+          </div>
+
+          <div class="movie-info">
+            <div class="movie-title">Dark Forest</div>
+
+            <div class="movie-meta">
+              <span>2025</span>
+              <span>Horror</span>
+            </div>
+
+            <div class="movie-actions">
+              <button class="small-btn" onclick="watchMovie('Dark Forest')">
+                ▶ Watch
+              </button>
+              <button class="small-btn" onclick="downloadMovie('Dark Forest')">
+                ↓ Download
+              </button>
+            </div>
+          </div>
+        </article>
+
+
+        <!-- MOVIE 7 -->
+        <article class="movie-card" data-title="Beyond Earth" data-category="sci-fi">
+          <div class="poster">
+            <img
+              src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=600&q=80"
+              alt="Beyond Earth poster"
+              loading="lazy"
+            >
+            <span class="quality">4K</span>
+          </div>
+
+          <div class="movie-info">
+            <div class="movie-title">Beyond Earth</div>
+
+            <div class="movie-meta">
+              <span>2026</span>
+              <span>Sci-Fi</span>
+            </div>
+
+            <div class="movie-actions">
+              <button class="small-btn" onclick="watchMovie('Beyond Earth')">
+                ▶ Watch
+              </button>
+              <button class="small-btn" onclick="downloadMovie('Beyond Earth')">
+                ↓ Download
+              </button>
+            </div>
+          </div>
+        </article>
+
+
+        <!-- MOVIE 8 -->
+        <article class="movie-card" data-title="The Detective" data-category="thriller">
+          <div class="poster">
+            <img
+              src="https://images.unsplash.com/photo-1485095329183-d0797cdc5676?auto=format&fit=crop&w=600&q=80"
+              alt="The Detective poster"
+              loading="lazy"
+            >
+            <span class="quality">HD</span>
+          </div>
+
+          <div class="movie-info">
+            <div class="movie-title">The Detective</div>
+
+            <div class="movie-meta">
+              <span>2025</span>
+              <span>Thriller</span>
+            </div>
+
+            <div class="movie-actions">
+              <button class="small-btn" onclick="watchMovie('The Detective')">
+                ▶ Watch
+              </button>
+              <button class="small-btn" onclick="downloadMovie('The Detective')">
+                ↓ Download
+              </button>
+            </div>
+          </div>
+        </article>
+
+
+        <!-- MOVIE 9 -->
+        <article class="movie-card" data-title="Ocean Lights" data-category="drama">
+          <div class="poster">
+            <img
+              src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=600&q=80"
+              alt="Ocean Lights poster"
+              loading="lazy"
+            >
+            <span class="quality">HD</span>
+          </div>
+
+          <div class="movie-info">
+            <div class="movie-title">Ocean Lights</div>
+
+            <div class="movie-meta">
+              <span>2026</span>
+              <span>Drama</span>
+            </div>
+
+            <div class="movie-actions">
+              <button class="small-btn" onclick="watchMovie('Ocean Lights')">
+                ▶ Watch
+              </button>
+              <button class="small-btn" onclick="downloadMovie('Ocean Lights')">
+                ↓ Download
+              </button>
+            </div>
+          </div>
+        </article>
+
+
+        <!-- MOVIE 10 -->
+        <article class="movie-card" data-title="City Heroes" data-category="action">
+          <div class="poster">
+            <img
+              src="https://images.unsplash.com/photo-1485236715568-ddc5ee6ca227?auto=format&fit=crop&w=600&q=80"
+              alt="City Heroes poster"
+              loading="lazy"
+            >
+            <span class="quality">4K</span>
+          </div>
+
+          <div class="movie-info">
+            <div class="movie-title">City Heroes</div>
+
+            <div class="movie-meta">
+              <span>2026</span>
+              <span>Action</span>
+            </div>
+
+            <div class="movie-actions">
+              <button class="small-btn" onclick="watchMovie('City Heroes')">
+                ▶ Watch
+              </button>
+              <button class="small-btn" onclick="downloadMovie('City Heroes')">
+                ↓ Download
+              </button>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+      <div class="no-results" id="noResults">
+        <h3>No movies found</h3>
+        <p>Try another title or category.</p>
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- FOOTER -->
+  <footer>
+
+    <div class="footer-top">
+
+      <div class="footer-brand">
+        <h2>UXY MOVIES</h2>
+        <p>
+          Discover movies, explore new stories, and enjoy
+          authorized content from one place.
+        </p>
+      </div>
+
+      <div class="footer-links">
+
+        <div class="footer-column">
+          <h3>Navigation</h3>
+          <a href="#home">Home</a>
+          <a href="#movies">Movies</a>
+          <a href="#categories">Categories</a>
+        </div>
+
+        <div class="footer-column">
+          <h3>Information</h3>
+          <a href="#">About</a>
+          <a href="#">Contact</a>
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="copyright">
+      © <span id="year"></span> UXY MOVIES. All rights reserved.
+    </div>
+
+  </footer>
+
+
+  <!-- MOBILE NAV -->
+  <nav class="mobile-nav">
+
+    <a href="#home">
+      <span>⌂</span>
+      Home
+    </a>
+
+    <a href="#movies">
+      <span>▣</span>
+      Movies
+    </a>
+
+    <a href="#categories">
+      <span>☰</span>
+      Categories
+    </a>
+
+  </nav>
+
+
+  <script>
+
+    /* CURRENT YEAR */
+    document.getElementById("year").textContent =
+      new Date().getFullYear();
+
+
+    /* SEARCH */
+    const searchForm = document.getElementById("searchForm");
+    const searchInput = document.getElementById("searchInput");
+    const movieCards = document.querySelectorAll(".movie-card");
+    const noResults = document.getElementById("noResults");
+
+    searchForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const query = searchInput.value
+        .trim()
+        .toLowerCase();
+
+      let visibleMovies = 0;
+
+      movieCards.forEach(card => {
+
+        const title = card.dataset.title.toLowerCase();
+
+        if (title.includes(query)) {
+          card.style.display = "";
+          visibleMovies++;
+        } else {
+          card.style.display = "none";
+        }
+
+      });
+
+      noResults.style.display =
+        visibleMovies === 0 ? "block" : "none";
+
+      document.getElementById("movies")
+        .scrollIntoView({ behavior: "smooth" });
+    });
+
+
+    /* LIVE SEARCH */
+    searchInput.addEventListener("input", function() {
+
+      const query = searchInput.value
+        .trim()
+        .toLowerCase();
+
+      if (!query) {
+        movieCards.forEach(card => {
+          card.style.display = "";
+        });
+
+        noResults.style.display = "none";
+        return;
+      }
+
+      let visibleMovies = 0;
+
+      movieCards.forEach(card => {
+
+        const title = card.dataset.title.toLowerCase();
+
+        if (title.includes(query)) {
+          card.style.display = "";
+          visibleMovies++;
+        } else {
+          card.style.display = "none";
+        }
+
+      });
+
+      noResults.style.display =
+        visibleMovies === 0 ? "block" : "none";
+    });
+
+
+    /* CATEGORY FILTER */
+    const categoryButtons =
+      document.querySelectorAll(".category");
+
+    categoryButtons.forEach(button => {
+
+      button.addEventListener("click", function() {
+
+        categoryButtons.forEach(btn =>
+          btn.classList.remove("active")
+        );
+
+        this.classList.add("active");
+
+        const selectedCategory =
+          this.dataset.category;
+
+        let visibleMovies = 0;
+
+        movieCards.forEach(card => {
+
+          const cardCategory =
+            card.dataset.category;
+
+          if (
+            selectedCategory === "all" ||
+            cardCategory === selectedCategory
+          ) {
+            card.style.display = "";
+            visibleMovies++;
+          } else {
+            card.style.display = "none";
+          }
+
+        });
+
+        noResults.style.display =
+          visibleMovies === 0 ? "block" : "none";
+      });
+
+    });
+
+
+    /*
+      WATCH FUNCTION
+
+      Replace the alert with your real movie player URL,
+      for example:
+
+      window.location.href =
+        "watch.html?id=123";
+    */
+    function watchMovie(movieName) {
+
+      alert(
+        "Watch page for \"" +
+        movieName +
+        "\" will be connected to your video player."
+      );
+
+    }
+
+
+    /*
+      DOWNLOAD FUNCTION
+
+      IMPORTANT:
+      Replace the placeholder URL with a file that you
+      are legally authorized to distribute.
+
+      Example:
+
+      const downloadUrl =
+        "/movies/my-authorized-movie.mp4";
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = "";
+      link.click();
+    */
+    function downloadMovie(movieName) {
+
+      alert(
+        "Download for \"" +
+        movieName +
+        "\" will be connected to your authorized movie file."
+      );
+
+    }
+
+  </script>
+
+</body>
+</html>
