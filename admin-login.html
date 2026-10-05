@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <meta name="theme-color" content="#080808">
+
+  <title>UXY MOVIES — Admin Login</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background:
+        radial-gradient(
+          circle at top,
+          #211010 0%,
+          #0c0808 35%,
+          #050505 75%
+        );
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .login-wrapper {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 29px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 34px;
+    }
+
+    .logo span {
+      color: #ed0b16;
+    }
+
+    .login-card {
+      background: rgba(16, 16, 16, 0.96);
+      border: 1px solid #292929;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    }
+
+    .login-card h1 {
+      font-size: 27px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #929292;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 28px;
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      color: #c7c7c7;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      height: 50px;
+      padding: 0 14px;
+      border-radius: 9px;
+      border: 1px solid #333;
+      background: #080808;
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #ed0b16;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .password-wrapper input {
+      padding-right: 70px;
+    }
+
+    .show-password {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: #aaa;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    .login-button {
+      width: 100%;
+      height: 52px;
+      border: none;
+      border-radius: 9px;
+      background: #ed0b16;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 6px;
+    }
+
+    .login-button:active {
+      transform: scale(0.99);
+    }
+
+    .error {
+      display: none;
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #2a0d0f;
+      border: 1px solid #5a1c21;
+      color: #ff7379;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 22px;
+      color: #999;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .back-link:hover {
+      color: #fff;
+    }
+
+    .security-note {
+      margin-top: 22px;
+      color: #666;
+      font-size: 11px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 18px;
+      }
+
+      .login-card {
+        padding: 24px 20px;
+      }
+
+      .logo {
+        font-size: 25px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="login-wrapper">
+
+    <div class="logo">
+      UXY <span>MOVIES</span>
+    </div>
+
+    <section class="login-card">
+
+      <h1>Admin Login</h1>
+
+      <p class="subtitle">
+        Sign in to manage the UXY MOVIES library.
+      </p>
+
+      <form id="loginForm">
+
+        <div class="field">
+
+          <label for="email">
+            Admin Email
+          </label>
+
+          <input
+            id="email"
+            type="email"
+            autocomplete="username"
+            placeholder="admin@example.com"
+            required
+          >
+
+        </div>
+
+
+        <div class="field">
+
+          <label for="password">
+            Password
+          </label>
+
+          <div class="password-wrapper">
+
+            <input
+              id="password"
+              type="password"
+              autocomplete="current-password"
+              placeholder="Enter your password"
+              required
+            >
+
+            <button
+              type="button"
+              class="show-password"
+              id="togglePassword"
+            >
+              SHOW
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <button
+          type="submit"
+          class="login-button"
+        >
+          Sign In
+        </button>
+
+        <div
+          class="error"
+          id="errorMessage"
+        ></div>
+
+      </form>
+
+
+      <a
+        href="index.html"
+        class="back-link"
+      >
+        ← Back to UXY MOVIES
+      </a>
+
+      <p class="security-note">
+        Admin authentication will be connected to the secure
+        backend in the next development step.
+      </p>
+
+    </section>
+
+  </main>
+
+
+  <script>
+
+    const passwordInput =
+      document.getElementById("password");
+
+    const togglePassword =
+      document.getElementById("togglePassword");
+
+    const loginForm =
+      document.getElementById("loginForm");
+
+    const errorMessage =
+      document.getElementById("errorMessage");
+
+
+    /* =========================
+       SHOW / HIDE PASSWORD
+    ========================= */
+
+    togglePassword.addEventListener(
+      "click",
+      function () {
+
+        if (passwordInput.type === "password") {
+
+          passwordInput.type = "text";
+          togglePassword.textContent = "HIDE";
+
+        } else {
+
+          passwordInput.type = "password";
+          togglePassword.textContent = "SHOW";
+
+        }
+
+      }
+    );
+
+
+    /* =========================
+       LOGIN FORM
+    ========================= */
+
+    loginForm.addEventListener(
+      "submit",
+      function (event) {
+
+        event.preventDefault();
+
+        errorMessage.style.display = "none";
+
+        /*
+          Authentication will be connected
+          to the secure backend next.
+        */
+
+        errorMessage.textContent =
+          "Admin authentication is not connected yet. The secure login system will be added next.";
+
+        errorMessage.style.display = "block";
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>
