@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <meta
+    name="description"
+    content="Watch movies on UXY MOVIES."
+  >
+
+  <meta name="theme-color" content="#050505">
+
+  <title>Watch — UXY MOVIES</title>
+
+  <style>
+
+    :root {
+      --bg: #050505;
+      --surface: #111111;
+      --surface-2: #181818;
+      --text: #ffffff;
+      --muted: #999999;
+      --red: #e50914;
+      --border: rgba(255,255,255,.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+
+      background: var(--bg);
+      color: var(--text);
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      line-height: 1.5;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    /* =========================
+       NAVIGATION
+    ========================= */
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+
+      height: 66px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      padding: 0 5%;
+
+      background: rgba(5,5,5,.96);
+
+      border-bottom:
+        1px solid var(--border);
+
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+
+    .logo span {
+      color: var(--red);
+    }
+
+    .back {
+      color: #bbb;
+      font-size: .9rem;
+      transition: .2s ease;
+    }
+
+    .back:hover {
+      color: white;
+    }
+
+    /* =========================
+       PAGE
+    ========================= */
+
+    .watch-page {
+      width: 100%;
+      max-width: 1250px;
+
+      margin: 0 auto;
+
+      padding:
+        30px 5%
+        80px;
+    }
+
+    /* =========================
+       VIDEO PLAYER
+    ========================= */
+
+    .player {
+      position: relative;
+
+      width: 100%;
+
+      aspect-ratio: 16 / 9;
+
+      overflow: hidden;
+
+      background: #000;
+
+      border-radius: 10px;
+
+      border:
+        1px solid var(--border);
+
+      box-shadow:
+        0 20px 60px rgba(0,0,0,.45);
+    }
+
+    /*
+      REAL VIDEO PLAYER
+
+      When you have an authorized movie file,
+      replace the placeholder section with:
+
+      <video controls poster="poster.jpg">
+        <source
+          src="movie.mp4"
+          type="video/mp4"
+        >
+      </video>
+    */
+
+    .video-placeholder {
+      position: absolute;
+      inset: 0;
+
+      display: flex;
+      flex-direction: column;
+
+      align-items: center;
+      justify-content: center;
+
+      padding: 25px;
+
+      text-align: center;
+
+      background:
+        linear-gradient(
+          rgba(0,0,0,.72),
+          rgba(0,0,0,.92)
+        ),
+        url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1600&q=85")
+        center/cover no-repeat;
+    }
+
+    .play-circle {
+      width: 76px;
+      height: 76px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      margin-bottom: 20px;
+
+      border-radius: 50%;
+
+      background: white;
+      color: black;
+
+      font-size: 1.55rem;
+
+      box-shadow:
+        0 8px 35px rgba(0,0,0,.4);
+    }
+
+    .video-placeholder h1 {
+      margin-bottom: 8px;
+
+      font-size:
+        clamp(1.5rem, 4vw, 2.4rem);
+    }
+
+    .video-placeholder p {
+      max-width: 550px;
+
+      color: #bbb;
+
+      font-size: .9rem;
+    }
+
+    /* =========================
+       MOVIE INFORMATION
+    ========================= */
+
+    .movie-info {
+      padding-top: 28px;
+    }
+
+    .movie-info h2 {
+      margin-bottom: 8px;
+
+      font-size:
+        clamp(1.6rem, 4vw, 2.3rem);
+
+      line-height: 1.1;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+
+      gap: 10px;
+
+      color: var(--muted);
+
+      font-size: .9rem;
+    }
+
+    .quality {
+      color: #ddd;
+    }
+
+    /* =========================
+       ACTION BUTTONS
+    ========================= */
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+
+      gap: 10px;
+
+      margin-top: 22px;
+    }
+
+    .btn {
+      display: inline-flex;
+
+      align-items: center;
+      justify-content: center;
+
+      gap: 8px;
+
+      min-height: 44px;
+
+      padding:
+        11px 20px;
+
+      border: 0;
+
+      border-radius: 6px;
+
+      font-weight: 700;
+
+      transition:
+        transform .2s ease,
+        opacity .2s ease,
+        background .2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .download {
+      background: var(--red);
+      color: white;
+    }
+
+    .download:hover {
+      opacity: .85;
+    }
+
+    .details-btn {
+      background: var(--surface-2);
+      color: white;
+
+      border:
+        1px solid var(--border);
+    }
+
+    .details-btn:hover {
+      background: #222;
+    }
+
+    /* =========================
+       DESCRIPTION
+    ========================= */
+
+    .description {
+      margin-top: 30px;
+
+      max-width: 800px;
+
+      padding: 20px;
+
+      background: var(--surface);
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 8px;
+    }
+
+    .description h3 {
+      margin-bottom: 9px;
+
+      color: white;
+
+      font-size: 1rem;
+    }
+
+    .description p {
+      color: #aaa;
+
+      font-size: .9rem;
+
+      line-height: 1.7;
+    }
+
+    /* =========================
+       NOTICE
+    ========================= */
+
+    .notice {
+      margin-top: 18px;
+
+      padding: 14px 16px;
+
+      border-radius: 7px;
+
+      background:
+        rgba(229,9,20,.08);
+
+      border:
+        1px solid rgba(229,9,20,.2);
+
+      color: #bbb;
+
+      font-size: .78rem;
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
+
+    footer {
+      padding: 32px 5%;
+
+      border-top:
+        1px solid var(--border);
+
+      color: var(--muted);
+
+      text-align: center;
+
+      font-size: .78rem;
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 600px) {
+
+      .navbar {
+        height: 60px;
+
+        padding:
+          0 4%;
+      }
+
+      .logo {
+        font-size: 1.3rem;
+      }
+
+      .back {
+        font-size: .8rem;
+      }
+
+      .watch-page {
+        padding:
+          20px 4%
+          55px;
+      }
+
+      .player {
+        border-radius: 7px;
+      }
+
+      .play-circle {
+        width: 58px;
+        height: 58px;
+
+        margin-bottom: 12px;
+
+        font-size: 1.15rem;
+      }
+
+      .video-placeholder h1 {
+        font-size: 1.35rem;
+      }
+
+      .video-placeholder p {
+        font-size: .75rem;
+      }
+
+      .actions {
+        display: grid;
+
+        grid-template-columns:
+          1fr;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .description {
+        padding: 16px;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+  <!-- =========================
+       NAVIGATION
+  ========================= -->
+
+  <header class="navbar">
+
+    <a
+      href="index.html"
+      class="logo"
+    >
+      UXY <span>MOVIES</span>
+    </a>
+
+    <a
+      href="movie.html"
+      class="back"
+    >
+      ← Movie Details
+    </a>
+
+  </header>
+
+
+  <!-- =========================
+       MAIN
+  ========================= -->
+
+  <main class="watch-page">
+
+
+    <!-- =========================
+         VIDEO PLAYER
+    ========================= -->
+
+    <section class="player">
+
+      <!--
+
+        REAL VIDEO PLAYER WILL GO HERE.
+
+        Example for an authorized movie:
+
+        <video
+          controls
+          poster="poster.jpg"
+          playsinline
+        >
+
+          <source
+            src="movie.mp4"
+            type="video/mp4"
+          >
+
+          Your browser does not support
+          HTML5 video.
+
+        </video>
+
+      -->
+
+
+      <div class="video-placeholder">
+
+        <div class="play-circle">
+          ▶
+        </div>
+
+        <h1>
+          The Last Horizon
+        </h1>
+
+        <p>
+          Your authorized movie video will appear
+          here when the video storage system is connected.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         MOVIE INFORMATION
+    ========================= -->
+
+    <section class="movie-info">
+
+      <h2>
+        The Last Horizon
+      </h2>
+
+
+      <div class="meta">
+
+        <span>
+          2026
+        </span>
+
+        <span>
+          •
+        </span>
+
+        <span>
+          Sci-Fi
+        </span>
+
+        <span>
+          •
+        </span>
+
+        <span>
+          2h 08m
+        </span>
+
+        <span>
+          •
+        </span>
+
+        <span class="quality">
+          HD
+        </span>
+
+      </div>
+
+
+      <!-- =========================
+           ACTIONS
+      ========================= -->
+
+      <div class="actions">
+
+        <button
+          class="btn download"
+          onclick="downloadMovie()"
+        >
+          ↓ Download Movie
+        </button>
+
+
+        <a
+          href="movie.html"
+          class="btn details-btn"
+        >
+          Movie Details
+        </a>
+
+
+        <a
+          href="index.html"
+          class="btn details-btn"
+        >
+          ← Back to Movies
+        </a>
+
+      </div>
+
+
+      <!-- =========================
+           DESCRIPTION
+      ========================= -->
+
+      <div class="description">
+
+        <h3>
+          About this movie
+        </h3>
+
+        <p>
+          A cinematic adventure about a group of
+          explorers searching for a new home beyond
+          the edge of known space.
+        </p>
+
+      </div>
+
+
+      <!-- =========================
+           NOTICE
+      ========================= -->
+
+      <div class="notice">
+
+        The video player and download function will
+        be connected to authorized movie files during
+        the next development phase.
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- =========================
+       FOOTER
+  ========================= -->
+
+  <footer>
+
+    ©
+    <span id="year"></span>
+    UXY MOVIES.
+    All rights reserved.
+
+  </footer>
+
+
+  <!-- =========================
+       JAVASCRIPT
+  ========================= -->
+
+  <script>
+
+    /*
+      Current year
+    */
+
+    document.getElementById("year").textContent =
+      new Date().getFullYear();
+
+
+    /*
+      Download placeholder
+
+      This will later be replaced with the
+      authorized movie-file download URL.
+    */
+
+    function downloadMovie() {
+
+      alert(
+        "The authorized download system will be connected in Phase 2."
+      );
+
+    }
+
+  </script>
+
+
+</body>
+</html>
