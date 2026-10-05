@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
   <meta charset="UTF-8">
 
   <meta
@@ -9,15 +8,11 @@
     content="width=device-width, initial-scale=1.0, viewport-fit=cover"
   >
 
-  <meta
-    name="theme-color"
-    content="#080808"
-  >
+  <meta name="theme-color" content="#080808">
 
   <title>UXY MOVIES — Admin Dashboard</title>
 
   <style>
-
     * {
       box-sizing: border-box;
       margin: 0;
@@ -31,10 +26,6 @@
       min-height: 100vh;
     }
 
-    /* =========================
-       HEADER
-    ========================= */
-
     header {
       height: 72px;
       border-bottom: 1px solid #242424;
@@ -45,7 +36,7 @@
       position: sticky;
       top: 0;
       z-index: 20;
-      background: rgba(8, 8, 8, 0.96);
+      background: rgba(8, 8, 8, 0.97);
       backdrop-filter: blur(12px);
     }
 
@@ -80,10 +71,6 @@
       font-weight: 700;
       cursor: pointer;
     }
-
-    /* =========================
-       MAIN
-    ========================= */
 
     .container {
       max-width: 1200px;
@@ -124,10 +111,6 @@
       background: #ff1823;
     }
 
-    /* =========================
-       STATUS MESSAGE
-    ========================= */
-
     .message {
       display: none;
       margin-bottom: 20px;
@@ -150,10 +133,6 @@
       border: 1px solid #5a1c21;
       color: #ff7379;
     }
-
-    /* =========================
-       STATS
-    ========================= */
 
     .stats {
       display: grid;
@@ -179,14 +158,7 @@
       font-size: 30px;
     }
 
-    /* =========================
-       MOVIES
-    ========================= */
-
     .section-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       margin-bottom: 16px;
     }
 
@@ -269,10 +241,6 @@
       color: #ff5a61;
     }
 
-    /* =========================
-       EMPTY / LOADING
-    ========================= */
-
     .loading,
     .empty {
       background: #111;
@@ -283,9 +251,7 @@
       color: #888;
     }
 
-    /* =========================
-       ADD MOVIE PANEL
-    ========================= */
+    /* ADD MOVIE PANEL */
 
     .panel {
       display: none;
@@ -380,10 +346,6 @@
       cursor: pointer;
     }
 
-    /* =========================
-       NOTICE
-    ========================= */
-
     .notice {
       margin-top: 28px;
       padding: 16px;
@@ -394,10 +356,6 @@
       font-size: 13px;
       line-height: 1.6;
     }
-
-    /* =========================
-       MOBILE
-    ========================= */
 
     @media (max-width: 700px) {
 
@@ -462,18 +420,12 @@
       .cancel-button {
         width: 100%;
       }
-
     }
-
   </style>
 
 </head>
 
 <body>
-
-  <!-- =========================
-       HEADER
-  ========================= -->
 
   <header>
 
@@ -488,8 +440,9 @@
       </div>
 
       <button
+        type="button"
         class="logout-button"
-        id="logoutButton"
+        onclick="logoutAdmin()"
       >
         Logout
       </button>
@@ -499,30 +452,23 @@
   </header>
 
 
-  <!-- =========================
-       MAIN
-  ========================= -->
-
   <main class="container">
 
     <div class="top-section">
 
       <div>
-
-        <h1>
-          Dashboard
-        </h1>
+        <h1>Dashboard</h1>
 
         <p>
           Manage your UXY MOVIES library.
         </p>
-
       </div>
 
 
       <button
+        type="button"
         class="add-button"
-        id="addMovieButton"
+        onclick="showAddMovie()"
       >
         + Add Movie
       </button>
@@ -530,102 +476,58 @@
     </div>
 
 
-    <!-- MESSAGE -->
-
     <div
       id="message"
       class="message"
     ></div>
 
 
-    <!-- =========================
-         STATISTICS
-    ========================= -->
-
     <section class="stats">
 
       <div class="stat-card">
-
-        <p>
-          Total Movies
-        </p>
-
-        <h2 id="totalMovies">
-          0
-        </h2>
-
+        <p>Total Movies</p>
+        <h2 id="totalMovies">0</h2>
       </div>
 
-
       <div class="stat-card">
-
-        <p>
-          Published
-        </p>
-
-        <h2 id="publishedMovies">
-          0
-        </h2>
-
+        <p>Published</p>
+        <h2 id="publishedMovies">0</h2>
       </div>
 
-
       <div class="stat-card">
-
-        <p>
-          Drafts
-        </p>
-
-        <h2 id="draftMovies">
-          0
-        </h2>
-
+        <p>Drafts</p>
+        <h2 id="draftMovies">0</h2>
       </div>
 
     </section>
 
 
-    <!-- =========================
-         MOVIE LIST
-    ========================= -->
-
     <section>
 
       <div class="section-title">
-
-        <h2>
-          Movies
-        </h2>
-
+        <h2>Movies</h2>
       </div>
-
 
       <div
         class="movie-list"
         id="movieList"
       >
-
         <div class="loading">
           Loading movies...
         </div>
-
       </div>
 
     </section>
 
 
-    <!-- =========================
-         ADD MOVIE FORM
-    ========================= -->
+    <!-- ADD MOVIE -->
 
     <section
       class="panel"
       id="moviePanel"
     >
 
-      <h2>
-        Add New Movie
-      </h2>
+      <h2>Add New Movie</h2>
 
 
       <form id="movieForm">
@@ -678,41 +580,15 @@
                 Select genre
               </option>
 
-              <option value="Action">
-                Action
-              </option>
-
-              <option value="Adventure">
-                Adventure
-              </option>
-
-              <option value="Animation">
-                Animation
-              </option>
-
-              <option value="Comedy">
-                Comedy
-              </option>
-
-              <option value="Drama">
-                Drama
-              </option>
-
-              <option value="Horror">
-                Horror
-              </option>
-
-              <option value="Romance">
-                Romance
-              </option>
-
-              <option value="Sci-Fi">
-                Sci-Fi
-              </option>
-
-              <option value="Thriller">
-                Thriller
-              </option>
+              <option value="Action">Action</option>
+              <option value="Adventure">Adventure</option>
+              <option value="Animation">Animation</option>
+              <option value="Comedy">Comedy</option>
+              <option value="Drama">Drama</option>
+              <option value="Horror">Horror</option>
+              <option value="Romance">Romance</option>
+              <option value="Sci-Fi">Sci-Fi</option>
+              <option value="Thriller">Thriller</option>
 
             </select>
 
@@ -727,17 +603,9 @@
 
             <select id="quality">
 
-              <option value="HD">
-                HD
-              </option>
-
-              <option value="Full HD">
-                Full HD
-              </option>
-
-              <option value="4K">
-                4K
-              </option>
+              <option value="HD">HD</option>
+              <option value="Full HD">Full HD</option>
+              <option value="4K">4K</option>
 
             </select>
 
@@ -851,11 +719,10 @@
             Save Movie
           </button>
 
-
           <button
             type="button"
             class="cancel-button"
-            id="cancelButton"
+            onclick="hideAddMovie()"
           >
             Cancel
           </button>
@@ -866,10 +733,6 @@
 
     </section>
 
-
-    <!-- =========================
-         NOTICE
-    ========================= -->
 
     <div class="notice">
 
@@ -885,17 +748,13 @@
   </main>
 
 
-  <!-- =========================
-       JAVASCRIPT
-  ========================= -->
-
   <script>
 
     /* =====================================================
-       ADMIN PAGE PROTECTION
+       PAGE PROTECTION
     ===================================================== */
 
-    (async function protectAdminPage() {
+    async function protectAdminPage() {
 
       try {
 
@@ -914,78 +773,87 @@
           window.location.href =
             "/admin-login.html";
 
-          return;
+          return false;
 
         }
+
+        return true;
 
       } catch (error) {
 
         window.location.href =
           "/admin-login.html";
 
+        return false;
+
       }
 
-    })();
+    }
 
 
     /* =====================================================
-       ELEMENTS
+       SHOW ADD MOVIE
     ===================================================== */
 
-    const movieList =
-      document.getElementById(
-        "movieList"
+    function showAddMovie() {
+
+      const panel =
+        document.getElementById(
+          "moviePanel"
+        );
+
+      const form =
+        document.getElementById(
+          "movieForm"
+        );
+
+
+      form.reset();
+
+      panel.classList.add(
+        "active"
       );
 
-    const totalMovies =
-      document.getElementById(
-        "totalMovies"
+
+      setTimeout(
+        function () {
+
+          panel.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
+
+        },
+        100
       );
 
-    const publishedMovies =
-      document.getElementById(
-        "publishedMovies"
+    }
+
+
+    /* =====================================================
+       HIDE ADD MOVIE
+    ===================================================== */
+
+    function hideAddMovie() {
+
+      const panel =
+        document.getElementById(
+          "moviePanel"
+        );
+
+      const form =
+        document.getElementById(
+          "movieForm"
+        );
+
+
+      panel.classList.remove(
+        "active"
       );
 
-    const draftMovies =
-      document.getElementById(
-        "draftMovies"
-      );
+      form.reset();
 
-    const moviePanel =
-      document.getElementById(
-        "moviePanel"
-      );
-
-    const movieForm =
-      document.getElementById(
-        "movieForm"
-      );
-
-    const message =
-      document.getElementById(
-        "message"
-      );
-
-    const saveButton =
-      document.getElementById(
-        "saveButton"
-      );
-
-    const addMovieButton =
-      document.getElementById(
-        "addMovieButton"
-      );
-
-    const cancelButton =
-      document.getElementById(
-        "cancelButton"
-      );
-
-    const logoutButton =
-      document.getElementById(
-        "logoutButton"
-      );
+    }
 
 
     /* =====================================================
@@ -994,13 +862,24 @@
 
     function showMessage(
       text,
-      type = "success"
+      type
     ) {
 
-      message.textContent = text;
+      const element =
+        document.getElementById(
+          "message"
+        );
 
-      message.className =
+
+      element.textContent =
+        text;
+
+      element.className =
         "message " + type;
+
+      element.style.display =
+        "block";
+
 
       window.scrollTo({
         top: 0,
@@ -1010,59 +889,24 @@
     }
 
 
-    function hideMessage() {
-
-      message.style.display =
-        "none";
-
-    }
-
-
-    /* =====================================================
-       ADD MOVIE PANEL
-    ===================================================== */
-
-    addMovieButton.addEventListener(
-      "click",
-      function () {
-
-        moviePanel.classList.add(
-          "active"
-        );
-
-        movieForm.reset();
-
-        moviePanel.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
-
-      }
-    );
-
-
-    cancelButton.addEventListener(
-      "click",
-      function () {
-
-        moviePanel.classList.remove(
-          "active"
-        );
-
-        movieForm.reset();
-
-      }
-    );
-
-
     /* =====================================================
        LOAD MOVIES
     ===================================================== */
 
     async function loadMovies() {
 
+      const movieList =
+        document.getElementById(
+          "movieList"
+        );
+
+
       movieList.innerHTML =
-        '<div class="loading">Loading movies...</div>';
+        `
+          <div class="loading">
+            Loading movies...
+          </div>
+        `;
 
 
       try {
@@ -1155,19 +999,29 @@
         ).length;
 
 
-      totalMovies.textContent =
+      document.getElementById(
+        "totalMovies"
+      ).textContent =
         total;
 
-      publishedMovies.textContent =
+
+      document.getElementById(
+        "publishedMovies"
+      ).textContent =
         published;
 
-      draftMovies.textContent =
+
+      document.getElementById(
+        "draftMovies"
+      ).textContent =
         drafts;
 
 
       if (!movies.length) {
 
-        movieList.innerHTML =
+        document.getElementById(
+          "movieList"
+        ).innerHTML =
           `
             <div class="empty">
               No movies have been added yet.
@@ -1182,450 +1036,447 @@
       }
 
 
-      movieList.innerHTML =
-        movies
-          .map(
-            movie => {
+      document.getElementById(
+        "movieList"
+      ).innerHTML =
 
-              const poster =
-                movie.poster_url ||
-                "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=300&q=80";
+        movies.map(
+          movie => {
 
-
-              const statusClass =
-                movie.status ===
-                "draft"
-                  ? "draft"
-                  : "";
+            const poster =
+              movie.poster_url ||
+              "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=300&q=80";
 
 
-              const statusText =
-                movie.status ===
-                "draft"
-                  ? "DRAFT"
-                  : "PUBLISHED";
+            const metadata =
+              [
+                movie.year,
+                movie.genre,
+                movie.quality,
+                movie.duration
+              ]
+              .filter(Boolean)
+              .join(" • ");
 
 
-              const metadata =
-                [
-                  movie.year,
-                  movie.genre,
-                  movie.quality,
-                  movie.duration
-                ]
-                  .filter(Boolean)
-                  .join(" • ");
+            const statusClass =
+              movie.status === "draft"
+                ? "draft"
+                : "";
 
 
-              return `
-                <div class="movie-row">
+            return `
+              <div class="movie-row">
 
-                  <img
-                    class="poster"
-                    src="${escapeAttribute(
-                      poster
-                    )}"
-                    alt="${escapeAttribute(
+                <img
+                  class="poster"
+                  src="${escapeAttribute(
+                    poster
+                  )}"
+                  alt="${escapeAttribute(
+                    movie.title
+                  )}"
+                >
+
+                <div class="movie-info">
+
+                  <h3>
+                    ${escapeHtml(
                       movie.title
-                    )}"
-                    onerror="this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=300&q=80'"
+                    )}
+                  </h3>
+
+                  <p>
+                    ${escapeHtml(
+                      metadata ||
+                      "No metadata"
+                    )}
+                  </p>
+
+                  <span
+                    class="status ${statusClass}"
                   >
-
-                  <div class="movie-info">
-
-                    <h3>
-                      ${escapeHtml(
-                        movie.title
-                      )}
-                    </h3>
-
-                    <p>
-                      ${escapeHtml(
-                        metadata ||
-                        "No metadata"
-                      )}
-                    </p>
-
-                    <span
-                      class="status ${statusClass}"
-                    >
-                      ${statusText}
-                    </span>
-
-                  </div>
-
-                  <div class="actions">
-
-                    <button
-                      class="action-button"
-                      onclick="editMovie(${movie.id})"
-                    >
-                      Edit
-                    </button>
-
-                    <button
-                      class="action-button delete"
-                      onclick="deleteMovie(${movie.id}, '${escapeAttribute(movie.title)}')"
-                    >
-                      Delete
-                    </button>
-
-                  </div>
+                    ${
+                      movie.status === "draft"
+                        ? "DRAFT"
+                        : "PUBLISHED"
+                    }
+                  </span>
 
                 </div>
-              `;
 
-            }
-          )
-          .join("");
+
+                <div class="actions">
+
+                  <button
+                    type="button"
+                    class="action-button"
+                    onclick="editMovie()"
+                  >
+                    Edit
+                  </button>
+
+
+                  <button
+                    type="button"
+                    class="action-button delete"
+                    onclick="deleteMovie(
+                      ${Number(movie.id)},
+                      '${escapeJavaScript(
+                        movie.title
+                      )}'
+                    )"
+                  >
+                    Delete
+                  </button>
+
+                </div>
+
+              </div>
+            `;
+
+          }
+        ).join("");
 
     }
 
 
     /* =====================================================
-       ADD MOVIE
+       SAVE MOVIE
     ===================================================== */
 
-    movieForm.addEventListener(
-      "submit",
-      async function (event) {
+    async function saveMovie(
+      event
+    ) {
 
-        event.preventDefault();
-
-        hideMessage();
-
-        saveButton.disabled =
-          true;
-
-        saveButton.textContent =
-          "Saving...";
+      event.preventDefault();
 
 
-        const movie = {
-
-          title:
-            document
-              .getElementById(
-                "title"
-              )
-              .value
-              .trim(),
-
-          year:
-            document
-              .getElementById(
-                "year"
-              )
-              .value || null,
-
-          genre:
-            document
-              .getElementById(
-                "genre"
-              )
-              .value || null,
-
-          quality:
-            document
-              .getElementById(
-                "quality"
-              )
-              .value || null,
-
-          duration:
-            document
-              .getElementById(
-                "duration"
-              )
-              .value
-              .trim() || null,
-
-          description:
-            document
-              .getElementById(
-                "description"
-              )
-              .value
-              .trim() || null,
-
-          poster_url:
-            document
-              .getElementById(
-                "poster"
-              )
-              .value
-              .trim() || null,
-
-          video_url:
-            document
-              .getElementById(
-                "videoUrl"
-              )
-              .value
-              .trim() || null,
-
-          download_url:
-            document
-              .getElementById(
-                "downloadUrl"
-              )
-              .value
-              .trim() || null,
-
-          status:
-            document
-              .getElementById(
-                "status"
-              )
-              .value
-
-        };
+      const saveButton =
+        document.getElementById(
+          "saveButton"
+        );
 
 
-        try {
-
-          const response =
-            await fetch(
-              "/api/movies",
-              {
-                method: "POST",
-
-                headers: {
-                  "Content-Type":
-                    "application/json"
-                },
-
-                credentials: "include",
-
-                body:
-                  JSON.stringify(movie)
-              }
-            );
+      const title =
+        document
+          .getElementById("title")
+          .value
+          .trim();
 
 
-          if (response.status === 401) {
+      if (!title) {
 
-            window.location.href =
-              "/admin-login.html";
+        showMessage(
+          "Please enter a movie title.",
+          "error"
+        );
 
-            return;
+        return;
 
-          }
-
-
-          const data =
-            await response.json();
+      }
 
 
-          if (
-            !response.ok ||
-            !data.success
-          ) {
+      const movie = {
 
-            throw new Error(
-              data.message ||
-              "Unable to save movie."
-            );
+        title: title,
 
-          }
+        year:
+          document
+            .getElementById("year")
+            .value || null,
+
+        genre:
+          document
+            .getElementById("genre")
+            .value || null,
+
+        quality:
+          document
+            .getElementById("quality")
+            .value || null,
+
+        duration:
+          document
+            .getElementById("duration")
+            .value
+            .trim() || null,
+
+        description:
+          document
+            .getElementById("description")
+            .value
+            .trim() || null,
+
+        poster_url:
+          document
+            .getElementById("poster")
+            .value
+            .trim() || null,
+
+        video_url:
+          document
+            .getElementById("videoUrl")
+            .value
+            .trim() || null,
+
+        download_url:
+          document
+            .getElementById("downloadUrl")
+            .value
+            .trim() || null,
+
+        status:
+          document
+            .getElementById("status")
+            .value
+
+      };
 
 
-          movieForm.reset();
+      saveButton.disabled =
+        true;
 
-          moviePanel.classList.remove(
-            "active"
+      saveButton.textContent =
+        "Saving...";
+
+
+      try {
+
+        const response =
+          await fetch(
+            "/api/movies",
+            {
+              method: "POST",
+
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
+
+              credentials: "include",
+
+              body:
+                JSON.stringify(movie)
+            }
           );
 
 
-          showMessage(
-            `"${movie.title}" was added successfully.`,
-            "success"
-          );
+        if (response.status === 401) {
 
+          window.location.href =
+            "/admin-login.html";
 
-          await loadMovies();
-
-
-        } catch (error) {
-
-          showMessage(
-            error.message ||
-            "Unable to save movie.",
-            "error"
-          );
-
-        } finally {
-
-          saveButton.disabled =
-            false;
-
-          saveButton.textContent =
-            "Save Movie";
+          return;
 
         }
 
+
+        const data =
+          await response.json();
+
+
+        if (
+          !response.ok ||
+          !data.success
+        ) {
+
+          throw new Error(
+            data.message ||
+            "Unable to save movie."
+          );
+
+        }
+
+
+        hideAddMovie();
+
+
+        showMessage(
+          `"${title}" was added successfully.`,
+          "success"
+        );
+
+
+        await loadMovies();
+
+
+      } catch (error) {
+
+        showMessage(
+          error.message ||
+          "Unable to save movie.",
+          "error"
+        );
+
+      } finally {
+
+        saveButton.disabled =
+          false;
+
+        saveButton.textContent =
+          "Save Movie";
+
       }
-    );
+
+    }
 
 
     /* =====================================================
        DELETE MOVIE
     ===================================================== */
 
-    window.deleteMovie =
-      async function (
-        id,
-        title
-      ) {
+    async function deleteMovie(
+      id,
+      title
+    ) {
 
-        const confirmed =
-          confirm(
-            `Delete "${title}"?`
+      const confirmed =
+        confirm(
+          `Delete "${title}"?`
+        );
+
+
+      if (!confirmed) {
+        return;
+      }
+
+
+      try {
+
+        const response =
+          await fetch(
+            `/api/movies?id=${encodeURIComponent(id)}`,
+            {
+              method: "DELETE",
+              credentials: "include"
+            }
           );
 
 
-        if (!confirmed) {
+        if (response.status === 401) {
+
+          window.location.href =
+            "/admin-login.html";
+
           return;
+
         }
 
 
-        try {
-
-          const response =
-            await fetch(
-              `/api/movies?id=${encodeURIComponent(id)}`,
-              {
-                method: "DELETE",
-                credentials: "include"
-              }
-            );
+        const data =
+          await response.json();
 
 
-          if (response.status === 401) {
+        if (
+          !response.ok ||
+          !data.success
+        ) {
 
-            window.location.href =
-              "/admin-login.html";
-
-            return;
-
-          }
-
-
-          const data =
-            await response.json();
-
-
-          if (
-            !response.ok ||
-            !data.success
-          ) {
-
-            throw new Error(
-              data.message ||
-              "Unable to delete movie."
-            );
-
-          }
-
-
-          showMessage(
-            `"${title}" was deleted.`,
-            "success"
-          );
-
-
-          await loadMovies();
-
-
-        } catch (error) {
-
-          showMessage(
-            error.message ||
-            "Unable to delete movie.",
-            "error"
+          throw new Error(
+            data.message ||
+            "Unable to delete movie."
           );
 
         }
 
-      };
-
-
-    /* =====================================================
-       EDIT MOVIE
-    ===================================================== */
-
-    window.editMovie =
-      function () {
 
         showMessage(
-          "Edit Movie will be connected in the next step.",
+          `"${title}" was deleted.`,
           "success"
         );
 
-      };
+
+        await loadMovies();
+
+
+      } catch (error) {
+
+        showMessage(
+          error.message ||
+          "Unable to delete movie.",
+          "error"
+        );
+
+      }
+
+    }
+
+
+    /* =====================================================
+       EDIT
+    ===================================================== */
+
+    function editMovie() {
+
+      showMessage(
+        "Edit Movie will be connected next.",
+        "success"
+      );
+
+    }
 
 
     /* =====================================================
        LOGOUT
     ===================================================== */
 
-    logoutButton.addEventListener(
-      "click",
-      async function () {
+    async function logoutAdmin() {
 
-        try {
+      try {
 
-          await fetch(
-            "/api/logout",
-            {
-              method: "POST",
-              credentials: "include"
-            }
-          );
+        await fetch(
+          "/api/logout",
+          {
+            method: "POST",
+            credentials: "include"
+          }
+        );
 
-        } catch (error) {
+      } catch (error) {
 
-          console.error(error);
-
-        }
-
-
-        window.location.href =
-          "/admin-login.html";
+        console.error(error);
 
       }
-    );
+
+
+      window.location.href =
+        "/admin-login.html";
+
+    }
 
 
     /* =====================================================
-       HTML ESCAPING
+       ESCAPING
     ===================================================== */
 
     function escapeHtml(
       value
     ) {
 
-      return String(value ?? "")
-        .replace(
-          /&/g,
-          "&amp;"
-        )
-        .replace(
-          /</g,
-          "&lt;"
-        )
-        .replace(
-          />/g,
-          "&gt;"
-        )
-        .replace(
-          /"/g,
-          "&quot;"
-        )
-        .replace(
-          /'/g,
-          "&#039;"
-        );
+      return String(
+        value ?? ""
+      )
+      .replace(
+        /&/g,
+        "&amp;"
+      )
+      .replace(
+        /</g,
+        "&lt;"
+      )
+      .replace(
+        />/g,
+        "&gt;"
+      )
+      .replace(
+        /"/g,
+        "&quot;"
+      )
+      .replace(
+        /'/g,
+        "&#039;"
+      );
 
     }
 
@@ -1634,16 +1485,73 @@
       value
     ) {
 
-      return escapeHtml(value);
+      return escapeHtml(
+        value
+      );
+
+    }
+
+
+    function escapeJavaScript(
+      value
+    ) {
+
+      return String(
+        value ?? ""
+      )
+      .replace(
+        /\\/g,
+        "\\\\"
+      )
+      .replace(
+        /'/g,
+        "\\'"
+      )
+      .replace(
+        /"/g,
+        '\\"'
+      )
+      .replace(
+        /\n/g,
+        "\\n"
+      )
+      .replace(
+        /\r/g,
+        "\\r"
+      );
 
     }
 
 
     /* =====================================================
-       INITIAL LOAD
+       FORM EVENT
     ===================================================== */
 
-    loadMovies();
+    document
+      .getElementById("movieForm")
+      .addEventListener(
+        "submit",
+        saveMovie
+      );
+
+
+    /* =====================================================
+       INITIALIZE
+    ===================================================== */
+
+    (async function initialize() {
+
+      const authenticated =
+        await protectAdminPage();
+
+
+      if (authenticated) {
+
+        await loadMovies();
+
+      }
+
+    })();
 
   </script>
 
